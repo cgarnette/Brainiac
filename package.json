@@ -1,0 +1,32 @@
+{
+  "name": "braniac",
+  "version": "1.0.0",
+  "description": "A ChatGPT integrated bot for discord",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc && node lib/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cgarnette/Braniac.git"
+  },
+  "author": "CJ Garnette",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cgarnette/Braniac/issues"
+  },
+  "homepage": "https://github.com/cgarnette/Braniac#readme",
+  "dependencies": {
+    "@discordjs/builders": "^1.6.3",
+    "@discordjs/rest": "^1.7.1",
+    "discord.js": "^14.11.0",
+    "dotenv": "^16.3.1",
+    "openai": "^3.3.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.6"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^8.2.0"
+  }
+}
