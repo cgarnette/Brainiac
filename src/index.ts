@@ -2,7 +2,10 @@ import { Client, GatewayIntentBits } from 'discord.js';
 import dotenv from 'dotenv';
 import { Configuration, OpenAIApi } from 'openai';
 
-
+// Future Improvements:
+// https://github.com/techleadhd/chatgpt-retrieval/blob/main/chatgpt.py
+// https://python.langchain.com/docs/get_started/introduction.html
+// https://beebom.com/how-train-ai-chatbot-custom-knowledge-base-chatgpt-api/
 dotenv.config();
 
 const BOT_DISCORD_ID = "1129859810465173534"
@@ -65,6 +68,8 @@ const startBraniac = () => {
             })
     });
 };
+
+startBraniac();
 
 const runTest = async () => {
     const configuration = new Configuration({
