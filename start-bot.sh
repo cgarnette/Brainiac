@@ -1,0 +1,1 @@
+docker run -d --name braniac-bot braniac:1.0.3
