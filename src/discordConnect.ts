@@ -9,7 +9,7 @@ import { parseFeedForArticles, prepArticlesForDiscord, reduceAndDiversifyArticle
 // https://python.langchain.com/docs/get_started/introduction.html
 // https://beebom.com/how-train-ai-chatbot-custom-knowledge-base-chatgpt-api/
 
-export const startBraniacBot = async () => {
+export const startBrainiacBot = async () => {
     const client = new Client({
         intents: [
             GatewayIntentBits.Guilds,
@@ -26,19 +26,19 @@ export const startBraniacBot = async () => {
 
     client.on('messageCreate', async (message) => {
 
-        // if (message.content === BRANIAC_ARTICLE_TRIGGER) {
-        //     const feedUrl = channelMapping[message.channelId];
-        //     if (!feedUrl) return;
+        if (message.content === BRANIAC_ARTICLE_TRIGGER) {
+            const feedUrl = channelMapping[message.channelId] || channelMapping[channels.aotd];
+            if (!feedUrl) return;
 
-        //     const channel = await client.channels.fetch(channels.botDev) as TextChannel;
+            const channel = await client.channels.fetch(channels.botDev) as TextChannel;
 
-        //     const allArticles = await parseFeedForArticles(feedUrl);
-        //     const selectedArticles = reduceAndDiversifyArticles(allArticles);
-        //     const articlesMessage = await prepArticlesForDiscord(selectedArticles);
+            const allArticles = await parseFeedForArticles(feedUrl.link);
+            const selectedArticles = reduceAndDiversifyArticles(allArticles);
+            const articlesMessage = await prepArticlesForDiscord(selectedArticles);
 
-        //     articlesMessage.forEach((message) => channel.send(message));
-        //     return;
-        // }
+            articlesMessage.forEach((message) => channel.send(message));
+            return;
+        }
 
         if (message.author.bot || !message.mentions.users.has(BOT_DISCORD_ID)) {
             return;

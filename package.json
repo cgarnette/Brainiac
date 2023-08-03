@@ -1,25 +1,25 @@
 {
-  "name": "braniac",
-  "version": "1.0.0",
+  "name": "brainiac",
+  "version": "1.0.5",
   "description": "A ChatGPT integrated bot for discord",
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsc && node lib/index.js",
-    "env": "npx ssm-export --path=/braniac --file-name=./.env --type=dotenv",
+    "env": "npx ssm-export --path=/brainiac --file-name=./.env --type=dotenv",
     "getFeed": "tsc && node lib/services.js",
-    "braniac": "tsc && node lib/discordConnect.js"
+    "brainiac": "tsc && node lib/discordConnect.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cgarnette/Braniac.git"
+    "url": "git+https://github.com/cgarnette/Brainiac.git"
   },
   "author": "CJ Garnette",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/cgarnette/Braniac/issues"
+    "url": "https://github.com/cgarnette/Brainiac/issues"
   },
-  "homepage": "https://github.com/cgarnette/Braniac#readme",
+  "homepage": "https://github.com/cgarnette/Brainiac#readme",
   "dependencies": {
     "@discordjs/builders": "^1.6.3",
     "@discordjs/rest": "^1.7.1",
@@ -39,6 +39,7 @@
     "@types/cors": "^2.8.13",
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.17",
+    "@types/luxon": "^3.3.1",
     "@types/xml2js": "^0.4.11"
   }
 }

@@ -49,7 +49,7 @@ export const articleMapping = {
         releaseDays: [2, 5]
     },
     [channels.aotd]: {
-        link: feeds.top,
+        link: feeds.business,
         releaseDays: [0, 1, 2, 3, 4, 5, 6]
     },
     [channels.getmoney]: {
@@ -74,4 +74,4 @@ export const articleMapping = {
     }
 };
 
-export const BRANIAC_ARTICLE_TRIGGER = 'Hey Braniac, What News do you have!'
+export const BRANIAC_ARTICLE_TRIGGER = 'Hey Brainiac, What News do you have!'

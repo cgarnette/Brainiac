@@ -2,9 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import { APP_PORT } from './constants';
 import bodyParser from 'body-parser';
-import { startBraniacBot } from './discordConnect';
+import { startBrainiacBot } from './discordConnect';
 
-startBraniacBot();
+startBrainiacBot();
 
 const app = express();
 app.use(cors())

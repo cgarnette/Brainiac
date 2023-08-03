@@ -1,2 +1,2 @@
-docker rm -f braniac
-docker run -d --name braniac -p '3005:3005' braniac:1.0.4
+docker rm -f brainiac
+docker run -d --name brainiac -p '3005:3005' brainiac:1.0.6

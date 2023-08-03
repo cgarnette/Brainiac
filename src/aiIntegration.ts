@@ -13,7 +13,7 @@ export const getAiResponse = async (incomingMessage: string): Promise<ChatComple
     return openai.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages: [
-            { "role": "system", "content": "You are a helpful assistant named Braniac." },
+            { "role": "system", "content": "You are a helpful assistant named Brainiac." },
             { "role": "user", "content": incomingMessage },
         ]
     })

@@ -44,7 +44,7 @@ export const parseFeedForArticles = async (feedAddress: string) => {
             if (article.link[0].includes('kill-the-newsletter')) return;
 
             parsedFeed.push({
-            description: article.description[0],
+            description: article.description[0].length > 100 ? '' : article.description[0],
             title: article.title[0],
             link: article.link[0]
         });
@@ -84,18 +84,20 @@ export const reduceAndDiversifyArticles = (articles: ParsedArticle[]) => {
     });
 
     const articlesToKeep = [];
-    const articleIndices = new Set();
+    const articleIndices = new Set<string>();
 
     let emergencyCounter = 0;
 
     while (articleIndices.size < MAX_ARTICLES && emergencyCounter < MAX_ARTICLES) {
         const randomIndex = Math.floor(Math.random() * selectedArticles.length);
 
-        if (!articleIndices.has(randomIndex)) {
+        if (!articleIndices.has(selectedArticles[randomIndex].link)) {
+            articleIndices.add(selectedArticles[randomIndex].link);
             articlesToKeep.push(selectedArticles[randomIndex]);
         }
         emergencyCounter ++;
     }
+
     return articlesToKeep
 };
 
