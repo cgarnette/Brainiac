@@ -2,10 +2,10 @@
   "name": "brainiac",
   "version": "1.0.21",
   "description": "A ChatGPT integrated bot for discord",
-  "main": "lib/index.js",
+  "main": "lib/src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc && node lib/index.js",
+    "start": "tsc && node lib/src/index.js",
     "env": "npx ssm-export --path=/brainiac --file-name=./.env --type=dotenv",
     "updateVersion": "npm version patch",
     "build-image": "docker build -t brainiac:$npm_package_version .",
