@@ -1,4 +1,4 @@
-import * as FITNESS_PROFILES from '../../fitness.json';
+import * as FITNESS_PROFILES from '../../data/fitness.json';
 import * as fs from 'fs';
 
 export type FitnessProfile = {
