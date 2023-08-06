@@ -1,6 +1,6 @@
 {
   "name": "brainiac",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "A ChatGPT integrated bot for discord",
   "main": "lib/index.js",
   "scripts": {
