@@ -10,4 +10,5 @@ COPY data /usr/app/data
 
 RUN npm i
 
-CMD ["npm", "run", "start"]
+#CMD ["npm", "run", "start"]
+ENTRYPOINT ["tail", "-f", "/dev/null"]
