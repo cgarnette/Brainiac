@@ -1,5 +1,6 @@
 import * as xml2js from 'xml2js';
-import { getAiResponse } from "./aiIntegration";
+import { getAiResponse } from "../aiIntegration";
+import axios from 'axios';
 
 const MAX_ARTICLES_PER_SOURCE = 5;
 const MAX_ARTICLES = 3;
@@ -31,7 +32,7 @@ type ParsedArticle = {
 
 
 export const parseFeedForArticles = async (feedAddress: string) => {
-    const businessFeedXml = await fetch(feedAddress).then((response) => response.text());
+    const businessFeedXml = await axios.get(feedAddress).then((response) => response.data);
 
     const parsedFeed: ParsedArticle[] = []
 

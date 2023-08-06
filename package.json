@@ -1,14 +1,15 @@
 {
   "name": "brainiac",
-  "version": "1.0.5",
+  "version": "1.0.15",
   "description": "A ChatGPT integrated bot for discord",
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsc && node lib/index.js",
     "env": "npx ssm-export --path=/brainiac --file-name=./.env --type=dotenv",
-    "getFeed": "tsc && node lib/services.js",
-    "brainiac": "tsc && node lib/discordConnect.js"
+    "build:docker": "docker build -t brainiac:$npm_package_version",
+    "start:docker": "npm run stop:docker && docker run -d --name brainiac -p '3005:3005' brainiac:$npm_package_version",
+    "stop:docker": "docker rm -f brainiac"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
   "dependencies": {
     "@discordjs/builders": "^1.6.3",
     "@discordjs/rest": "^1.7.1",
+    "axios": "^1.4.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "cron": "^2.4.0",
