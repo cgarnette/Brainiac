@@ -2,9 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import { APP_PORT } from './constants';
 import bodyParser from 'body-parser';
-import { startBrainiacBot } from './discordConnect';
+import { initializeBot } from './discordConnector';
+import { startArticleJob } from './services/channelArticles';
 
-startBrainiacBot();
+initializeBot();
 
 const app = express();
 app.use(cors())

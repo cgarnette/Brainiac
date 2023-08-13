@@ -1,5 +1,5 @@
 import { ChatCompletionResponseMessage, Configuration, OpenAIApi } from 'openai';
-import { OPENAI_API_KEY } from './constants';
+import { GPT_MODELS, OPENAI_API_KEY } from './constants';
 
 // OpenAI configuration creation
 const configuration = new Configuration({
@@ -9,13 +9,13 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 
-export const getAiResponse = async (incomingMessage: string): Promise<ChatCompletionResponseMessage> => {
+export const getAiResponse = async (incomingMessage: string, model: string = GPT_MODELS.gpt3.model): Promise<ChatCompletionResponseMessage> => {
     return openai.createChatCompletion({
-        model: "gpt-3.5-turbo",
+        model,
         messages: [
             { "role": "system", "content": "You are a helpful assistant named Brainiac." },
             { "role": "user", "content": incomingMessage },
-        ]
+        ],
     })
     .then((response) => {
         if (!response.data) {
@@ -28,4 +28,11 @@ export const getAiResponse = async (incomingMessage: string): Promise<ChatComple
             }
         }
     });
+};
+
+const TheBrain = {
+    functions: {},
+    getFunctions: function() {
+        // this.functions
+    }
 };

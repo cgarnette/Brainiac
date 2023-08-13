@@ -46,32 +46,67 @@ export const feeds = {
 export const articleMapping = {
     [channels.sports]: {
         link: feeds.sports,
-        releaseDays: [2, 5]
+        releaseDays: [2, 5],
+        category: 'sports'
     },
     [channels.aotd]: {
         link: feeds.business,
-        releaseDays: [0, 1, 2, 3, 4, 5, 6]
+        releaseDays: [0, 1, 2, 3, 4, 5, 6],
+        category: 'business'
     },
     [channels.getmoney]: {
         link: feeds.business,
-        releaseDays: [1, 3, 5]
+        releaseDays: [1, 3, 5],
+        category: 'business'
     },
     [channels.xbox]: {
         link: feeds.gaming,
-        releaseDays: []
+        releaseDays: [],
+        category: 'gaming'
     },
     [channels.tvMovie]: {
         link: feeds.entertainment,
-        releaseDays: [0, 2, 4, 6]
+        releaseDays: [0, 2, 4, 6],
+        category: 'entertainment'
     },
     [channels.mentalWealth]: {
         link: feeds.psychology,
-        releaseDays: [0, 4]
+        releaseDays: [0, 4],
+        category: 'psychology'
     },
     [channels.adventure]: {
         link: feeds.travel,
-        releaseDays: [6]
+        releaseDays: [6],
+        category: 'adventure'
     }
 };
 
-export const BRANIAC_ARTICLE_TRIGGER = 'Hey Brainiac, What News do you have!'
+export const BRANIAC_ARTICLE_TRIGGER = 'Hey Brainiac, What News do you have!';
+
+export const GPT_MODELS = {
+    gpt3: {
+        model: 'gpt-3.5-turbo',
+        purpose: 'Use this for most calls. Cheapest and handles most queries fine'
+    },
+    gpt4: {
+        model: 'gpt-4',
+        purpose: 'More advanced/expensive. I would use this for generating internal text, like summaries to be reviewed by ai later'
+    },
+    gpt3Expanded: {
+        model: 'gpt-3.5-turbo-16k',
+        purpose: 'Same as gpt3 but handles more text. Perhaps better used for parsing articles'
+    },
+    gpt4Expanded: {
+        model: 'gpt-4-32k',
+        purpose: 'Same as gpt4, twice as much context as gpt3Expanded. Use for reviewing long documents'
+    },
+    gpt3Functions: {
+        model: 'gpt-3.5-turbo-0613',
+        purpose: 'gpt3 but with the ability to call functions. Use internal to app'
+    },
+    gpt4Functions: {
+        model: 'gpt-4-0613',
+        purpose: 'gpt4 but with the ability to call functions. Use internal to app. Use for more sophisticated tasks'
+    },
+
+};

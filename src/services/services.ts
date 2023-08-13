@@ -24,7 +24,7 @@ type Feed = {
     }
 }
 
-type ParsedArticle = { 
+export type ParsedArticle = { 
     description: string, 
     title: string; 
     link: string 

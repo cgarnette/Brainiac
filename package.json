@@ -10,7 +10,7 @@
     "updateVersion": "npm version patch",
     "build-image": "docker build -t brainiac:$npm_package_version .",
     "build:docker": "npm run updateVersion && npm run build-image",
-    "start:docker": "npm run stop:docker && docker run -d --name brainiac -p '3005:3005' brainiac:$npm_package_version",
+    "start:docker": "npm run stop:docker && docker run -d --restart unless-stopped --name brainiac -p '3005:3005' brainiac:$npm_package_version",
     "stop:docker": "docker rm -f brainiac"
   },
   "repository": {
@@ -26,6 +26,7 @@
   "dependencies": {
     "@discordjs/builders": "^1.6.3",
     "@discordjs/rest": "^1.7.1",
+    "@extractus/article-extractor": "^7.3.1",
     "axios": "^1.4.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
@@ -44,6 +45,7 @@
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.17",
     "@types/luxon": "^3.3.1",
+    "@types/sanitize-html": "^2.9.0",
     "@types/xml2js": "^0.4.11"
   }
 }
