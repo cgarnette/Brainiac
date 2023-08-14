@@ -2,8 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { APP_PORT } from './constants';
 import bodyParser from 'body-parser';
-import { initializeBot } from './discordConnector';
-import { startArticleJob } from './services/channelArticles';
+import { initializeBot } from './bot';
 
 initializeBot();
 

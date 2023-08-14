@@ -10,7 +10,7 @@
     "updateVersion": "npm version patch",
     "build-image": "docker build -t brainiac:$npm_package_version .",
     "build:docker": "npm run updateVersion && npm run build-image",
-    "start:docker": "npm run stop:docker && docker run -d --restart unless-stopped --name brainiac -p '3005:3005' brainiac:$npm_package_version",
+    "start:docker": "npm run stop:docker && docker run -d --restart unless-stopped --name brainiac -p '3005:3005' -v /mnt/md0/services/brainiac:/usr/app/data brainiac:$npm_package_version",
     "stop:docker": "docker rm -f brainiac"
   },
   "repository": {

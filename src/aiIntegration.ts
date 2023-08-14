@@ -8,10 +8,9 @@ const configuration = new Configuration({
 // OpenAI instance creation
 const openai = new OpenAIApi(configuration);
 
-
 export const getAiResponse = async (incomingMessage: string, model: string = GPT_MODELS.gpt3.model): Promise<ChatCompletionResponseMessage> => {
     return openai.createChatCompletion({
-        model,
+        'model': 'gpt-3.5-turbo',
         messages: [
             { "role": "system", "content": "You are a helpful assistant named Brainiac." },
             { "role": "user", "content": incomingMessage },

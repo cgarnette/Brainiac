@@ -78,6 +78,11 @@ export const articleMapping = {
         link: feeds.travel,
         releaseDays: [6],
         category: 'adventure'
+    },
+    [channels.botDev]: {
+        link: feeds.business,
+        releaseDays: [],
+        category: 'business'
     }
 };
 
@@ -108,5 +113,9 @@ export const GPT_MODELS = {
         model: 'gpt-4-0613',
         purpose: 'gpt4 but with the ability to call functions. Use internal to app. Use for more sophisticated tasks'
     },
+    davinci: {
+        model: 'text-davinci-003',
+        purpose: ''
+    }
 
 };

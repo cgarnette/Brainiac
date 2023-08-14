@@ -1,6 +1,8 @@
 import * as xml2js from 'xml2js';
 import { getAiResponse } from "../aiIntegration";
 import axios from 'axios';
+import * as fs from 'fs';
+import { ChatCompletionResponseMessage } from 'openai';
 
 const MAX_ARTICLES_PER_SOURCE = 5;
 const MAX_ARTICLES = 3;
@@ -31,28 +33,43 @@ export type ParsedArticle = {
 };
 
 
-export const parseFeedForArticles = async (feedAddress: string) => {
+export const parseFeedForArticles = async (feedAddress: string): Promise<ParsedArticle[]> => {
     const businessFeedXml = await axios.get(feedAddress).then((response) => response.data);
 
-    const parsedFeed: ParsedArticle[] = []
+    const articlesFromXml: Feed['rss']['$']['channel']['0']['item'][] = await new Promise<Feed['rss']['$']['channel']['0']['item'][]>((resolve, reject) => {
+        xml2js.parseString(businessFeedXml, async (err: any, result: Feed) => {
+            if(err) {
+                reject();
+            }
 
-    xml2js.parseString(businessFeedXml, (err: any, result: Feed) => {
-        if(err) {
-          throw err; 
+            resolve(result.rss.channel[0].item)
+        });
+    });
+
+    const parsedFeed: ParsedArticle[] = [];
+
+    for (const article of articlesFromXml as Feed['rss']['$']['channel']['0']['item'][]) {
+        if (article.link[0].includes('kill-the-newsletter')) continue;
+
+        if (article.link[0].includes('news.google.')) {
+            const linkFromAxios = await axios.get(article.link[0])
+                .then((response) => {
+                    return response.data.split('rel="nofollow">')[1].split('</a><c-data')[0]
+                })
+                .catch((e) => { console.log('Houston...you know the rest') });
+
+            if (linkFromAxios) {
+                article.link[0] = linkFromAxios;
+            }
         }
 
-        result.rss.channel[0].item.forEach((article) => {
-            if (article.link[0].includes('kill-the-newsletter')) return;
-
-            parsedFeed.push({
+        parsedFeed.push({
             description: article.description[0].length > 100 ? '' : article.description[0],
             title: article.title[0],
             link: article.link[0]
         });
-      });
-    });
-
-    return parsedFeed;
+    }
+    return parsedFeed
 };
 
 export const reduceAndDiversifyArticles = (articles: ParsedArticle[]) => {
@@ -60,7 +77,8 @@ export const reduceAndDiversifyArticles = (articles: ParsedArticle[]) => {
 
     // We want to know which news source is producing which articles
     articles.forEach((article) => {
-        const source = article.link.split('.com')[0];
+        const webpageType = article.link.includes('.com') ? '.com' : '.org';
+        const source = article.link.split(webpageType)[0];
 
         if (sources[source]) {
             sources[source].push(article);
