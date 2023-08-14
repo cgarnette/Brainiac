@@ -1,4 +1,3 @@
-import { ChatCompletionResponseMessage } from "openai";
 import { getAiResponse } from "./aiIntegration";
 import { BOT_DISCORD_ID, BRANIAC_ARTICLE_TRIGGER, DISCORD_TOKEN } from "./constants";
 import { discordConnector } from "./discordConnector";
@@ -41,5 +40,5 @@ const startBrainiacBot = async () => {
 
 export const initializeBot = () => {
     startBrainiacBot();
-    // startArticleJob();
+    startArticleJob();
 };

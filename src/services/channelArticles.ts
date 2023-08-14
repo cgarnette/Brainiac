@@ -1,5 +1,5 @@
 import { TextChannel } from 'discord.js';
-import { BOT_DISCORD_ID, BRANIAC_ARTICLE_TRIGGER, DISCORD_TOKEN, GPT_MODELS, articleMapping as channelMapping, channels } from '../constants';
+import { articleMapping as channelMapping, channels } from '../constants';
 import { discordConnector } from '../discordConnector';
 import cron from 'cron';
 import { ParsedArticle, parseFeedForArticles, prepArticlesForDiscord, reduceAndDiversifyArticles } from './services';
@@ -30,8 +30,6 @@ type ArticlesDb = {
 const Articles: ArticlesDb = {
     ...ArticlesData
 };
-
-console.log(Articles);
 
 const job = new cron.CronJob('30 15 * * *', async () => {
     try {
@@ -90,9 +88,7 @@ export const sendArticlesToDiscordChannel  = async (channelId: string) => {
 
 const addArticleToDb = (category: string, article: ParsedArticle, summary: string) => {
     const articleId = crypto.createHash('sha256').update(article.link).digest('hex');
-    if (category === 'default') {
-        console.log('GOTCHA!');
-    }
+
     Articles[category] = {
         ...Articles[category],
         [articleId]: {
