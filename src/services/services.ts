@@ -128,7 +128,7 @@ export const prepArticlesForDiscord = async (articles: ParsedArticle[]): Promise
 
     articles.forEach((article) => {
         message.push(`### [${article.title}](${article.link})
-        ${article.description}
+            ${article.description}
         `)
     });
 

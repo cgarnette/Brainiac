@@ -57,6 +57,7 @@ export const sendArticlesToDiscordChannel  = async (channelId: string) => {
     if (!feedUrl) return;
 
     const channel = await client.channels.fetch(channelId) as TextChannel;
+    const category = channelMapping[channelId].category;
 
     await parseFeedForArticles(feedUrl.link)
         .then(async (allArticles) => {
@@ -70,15 +71,27 @@ export const sendArticlesToDiscordChannel  = async (channelId: string) => {
                         return (await getAiResponse(`${prompt} Article: ${article.title}: ${articleText}`)).content as string;
                     })
                     .catch((e) => {
-                        console.error('Unable to get a summary', e);
+                        // console.error('Unable to get a summary', e);
                         return `Article: ${article.title}: ${article.description}`;
                     });
 
-                addArticleToDb(channelMapping[channelId].category, article, summary);
+                addArticleToDb(category, article, summary);
                 saveToFile();
             });
             const articleMessageQueue = await prepArticlesForDiscord(selectedArticles);
-            articleMessageQueue.forEach((message) => channel.send(message));
+            articleMessageQueue.forEach(async (message, index) => {
+                const sentMessage = await channel.send(message);
+                sentMessage
+                    .createReactionCollector({ filter: () => true, max: 20, time: 60000 * 60 * 24 })
+                    .on('collect', (reaction) => {
+                        if (reaction.emoji.name === '👍' && index > 0) {
+                            incrementArticleScore(category, selectedArticles[index - 1]);
+                        } else if (reaction.emoji.name === '👎' && index > 0) {
+                            decrementArticleScore(category, selectedArticles[index - 1]);
+                        }
+                        saveToFile();
+                    });
+            });
         })
         .catch((e) => {
             postErrorNotification(e);
@@ -98,6 +111,16 @@ const addArticleToDb = (category: string, article: ParsedArticle, summary: strin
             aiReadableSummary: summary
         }
     }
+};
+
+const incrementArticleScore = (category: string, article: ParsedArticle) => {
+    const articleId = crypto.createHash('sha256').update(article.link).digest('hex');
+    Articles[category][articleId].rating += 1;
+};
+
+const decrementArticleScore = (category: string, article: ParsedArticle) => {
+    const articleId = crypto.createHash('sha256').update(article.link).digest('hex');
+    Articles[category][articleId].rating -= 1;
 };
 
 const saveToFile = async () => {
