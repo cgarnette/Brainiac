@@ -1,5 +1,5 @@
 import { TextChannel } from 'discord.js';
-import { articleMapping as channelMapping, channels } from '../constants';
+import { ARTICLE_SUMMARY_WORD_LIMIT, articleMapping as channelMapping, channels } from '../constants';
 import { discordConnector } from '../discordConnector';
 import cron from 'cron';
 import { ParsedArticle, parseFeedForArticles, prepArticlesForDiscord, reduceAndDiversifyArticles } from './services';
@@ -65,7 +65,7 @@ export const sendArticlesToDiscordChannel  = async (channelId: string) => {
             const selectedArticles = reduceAndDiversifyArticles(allArticles);
 
             selectedArticles.forEach(async (article) => {
-                const prompt = 'Hi, please read the following article and summarize it for future ai such as yourself. I would like another ai to be able to read this summary and be able to gather all the key information that was present in this article. Please try to include major themes, people, places, actions, outcomes, buzzwords and key take aways. please try to do so in 700 words or less.';
+                const prompt = `Hi, please read the following article and summarize it for future ai such as yourself. I would like another ai to be able to read this summary and be able to gather all the key information that was present in this article. Please try to include major themes, people, places, actions, outcomes, buzzwords and key take aways. please try to do so in ${ARTICLE_SUMMARY_WORD_LIMIT} words or less.`;
                 const summary = await getArticleText({ url: article.link })
                     .then(async (articleText) => {
                         return (await getAiResponse(`${prompt} Article: ${article.title}: ${articleText}`)).content as string;

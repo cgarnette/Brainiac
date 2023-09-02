@@ -51,7 +51,7 @@ export const articleMapping = {
     },
     [channels.aotd]: {
         link: feeds.business,
-        releaseDays: [0, 1, 2, 3, 4, 5, 6],
+        releaseDays: [1, 4],
         category: 'business'
     },
     [channels.getmoney]: {
@@ -117,5 +117,6 @@ export const GPT_MODELS = {
         model: 'text-davinci-003',
         purpose: ''
     }
-
 };
+
+export const ARTICLE_SUMMARY_WORD_LIMIT = 300;
