@@ -131,3 +131,6 @@ dist
 
 
 lib/
+python-projects/
+src/services/categorizations.ts
+src/services/*.html

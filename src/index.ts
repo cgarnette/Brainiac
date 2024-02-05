@@ -3,8 +3,9 @@ import cors from 'cors';
 import { APP_PORT } from './constants';
 import bodyParser from 'body-parser';
 import { initializeBot } from './bot';
+import { getArticleText } from './BrainFunctions';
 
-initializeBot();
+// initializeBot();
 
 const app = express();
 app.use(cors())
@@ -20,6 +21,13 @@ app.post('/webhook', (req, res) => {
     console.log(req.body);
 
     res.send('ok');
+});
+
+app.post('/article/parse', async (req, res) => {
+    const articleUrl = req.body.url;
+    const text = await getArticleText({ url: articleUrl });
+
+    res.send(text);
 });
 
 app.listen(APP_PORT, () => console.log(`Zipkey Backend listening on port ${APP_PORT}`));
