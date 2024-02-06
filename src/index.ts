@@ -31,7 +31,7 @@ app.post('/article/parse', async (req, res) => {
 
     const articleData = await getArticleContent({ url: articleUrl });
 
-    console.log('data', articleData);
+    console.log('data', articleData?.content);
 
     res.send(articleData?.content);
 });
