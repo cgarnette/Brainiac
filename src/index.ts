@@ -4,6 +4,7 @@ import { APP_PORT } from './constants';
 import bodyParser from 'body-parser';
 import { initializeBot } from './bot';
 import { getArticleContent } from './BrainFunctions';
+import { traceGoogleNewsArticle } from './services/services';
 
 // initializeBot();
 
@@ -24,7 +25,8 @@ app.post('/webhook', (req, res) => {
 });
 
 app.post('/article/parse', async (req, res) => {
-    const articleUrl = req.body.url;
+    const articleUrl = await traceGoogleNewsArticle(req.body.url);
+
     const articleData = await getArticleContent({ url: articleUrl });
 
     console.log('data', articleData);

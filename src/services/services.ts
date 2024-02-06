@@ -32,6 +32,22 @@ export type ParsedArticle = {
     link: string 
 };
 
+export const traceGoogleNewsArticle = async (articleLink: string) => {
+    if (articleLink.includes('news.google.')) {
+        const linkFromAxios = await axios.get(articleLink)
+            .then((response) => {
+                return response.data.split('rel="nofollow">')[1].split('</a><c-data')[0]
+            })
+            .catch((e) => { console.log('Houston...you know the rest') });
+
+        if (linkFromAxios) {
+            return linkFromAxios;
+        }
+    }
+    
+    return articleLink;
+}
+
 
 export const parseFeedForArticles = async (feedAddress: string): Promise<ParsedArticle[]> => {
     const businessFeedXml = await axios.get(feedAddress).then((response) => response.data);
@@ -51,17 +67,7 @@ export const parseFeedForArticles = async (feedAddress: string): Promise<ParsedA
     for (const article of articlesFromXml as Feed['rss']['$']['channel']['0']['item'][]) {
         if (article.link[0].includes('kill-the-newsletter')) continue;
 
-        if (article.link[0].includes('news.google.')) {
-            const linkFromAxios = await axios.get(article.link[0])
-                .then((response) => {
-                    return response.data.split('rel="nofollow">')[1].split('</a><c-data')[0]
-                })
-                .catch((e) => { console.log('Houston...you know the rest') });
-
-            if (linkFromAxios) {
-                article.link[0] = linkFromAxios;
-            }
-        }
+        article.link[0] = traceGoogleNewsArticle(article.link[0])
 
         parsedFeed.push({
             description: article.description[0].length > 100 ? '' : article.description[0],
