@@ -31,9 +31,9 @@ app.post('/article/parse', async (req, res) => {
 
     const articleData = await getArticleContent({ url: articleUrl });
 
-    console.log('data', articleData?.content);
+    // console.log('data', articleData?.content);
 
-    res.send(articleData?.content);
+    res.send("ok");
 });
 
 app.listen(APP_PORT, () => console.log(`Zipkey Backend listening on port ${APP_PORT}`));

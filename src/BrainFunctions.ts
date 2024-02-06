@@ -19,8 +19,11 @@ export const getWeather = (args: GetWeatherArgs) => {
 };
 
 export const getArticleContent = async (args: GetArticleText): Promise<ArticleData | null> => {
+    console.log("Parsing Article")
     const parsedArticle = await extract(args.url);
+    console.log("Article Parsed!");
     if (parsedArticle !== null) {
+        console.log("Successfully done!");
         return parsedArticle;
     } else {
         console.error('Something went wrong parsing article: ', args.url);
