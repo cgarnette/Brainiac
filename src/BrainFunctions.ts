@@ -24,7 +24,7 @@ export const getArticleContent = async (args: GetArticleText): Promise<ArticleDa
         return parsedArticle;
     } else {
         console.error('Something went wrong parsing article: ', args.url);
-        console.error(parsedArticle)
+        // console.error(parsedArticle)
         postErrorNotification('Something went wrong parsing article: ' + args.url);
     }
 

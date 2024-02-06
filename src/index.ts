@@ -27,6 +27,8 @@ app.post('/webhook', (req, res) => {
 app.post('/article/parse', async (req, res) => {
     const articleUrl = await traceGoogleNewsArticle(req.body.url);
 
+    console.log(articleUrl)
+
     const articleData = await getArticleContent({ url: articleUrl });
 
     console.log('data', articleData);
