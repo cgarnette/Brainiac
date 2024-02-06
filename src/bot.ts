@@ -1,7 +1,7 @@
 import { getAiResponse } from "./aiIntegration";
 import { BOT_DISCORD_ID, BRANIAC_ARTICLE_TRIGGER, DISCORD_TOKEN } from "./constants";
 import { discordConnector } from "./discordConnector";
-import { sendArticlesToDiscordChannel, startArticleJob } from "./services/channelArticles";
+import { executeBrainiacArticleFlow, startArticleJob } from "./services/channelArticles";
 
 const startBrainiacBot = async () => {
     const { client, postErrorNotification } = discordConnector;
@@ -14,7 +14,7 @@ const startBrainiacBot = async () => {
     client.on('messageCreate', async (message) => {
 
         if (message.content === BRANIAC_ARTICLE_TRIGGER) {
-            return sendArticlesToDiscordChannel(message.channelId);
+            return executeBrainiacArticleFlow(message.channelId);
         }
 
         if (message.author.bot || !message.mentions.users.has(BOT_DISCORD_ID)) {
