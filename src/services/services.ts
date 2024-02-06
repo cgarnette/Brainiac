@@ -36,7 +36,7 @@ export const traceGoogleNewsArticle = async (articleLink: string) => {
     if (articleLink.includes('news.google.')) {
         const linkFromAxios = await axios.get(articleLink)
             .then((response) => {
-                return response.data.split('rel="nofollow">')[1].split('</a><c-data')[0]
+                return response.data.split('rel="nofollow">')[1].split('</a><c-data')[0].split('</a')[0]
             })
             .catch((e) => { console.log('Houston...you know the rest') });
 
