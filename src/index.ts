@@ -3,7 +3,7 @@ import cors from 'cors';
 import { APP_PORT } from './constants';
 import bodyParser from 'body-parser';
 import { initializeBot } from './bot';
-import { getArticleText } from './BrainFunctions';
+import { getArticleContent } from './BrainFunctions';
 
 // initializeBot();
 
@@ -25,9 +25,9 @@ app.post('/webhook', (req, res) => {
 
 app.post('/article/parse', async (req, res) => {
     const articleUrl = req.body.url;
-    const text = await getArticleText({ url: articleUrl });
+    const articleData = await getArticleContent({ url: articleUrl });
 
-    res.send(text);
+    res.send(articleData);
 });
 
 app.listen(APP_PORT, () => console.log(`Zipkey Backend listening on port ${APP_PORT}`));

@@ -62,7 +62,7 @@ export const articleMapping = {
     [channels.xbox]: {
         link: feeds.gaming,
         releaseDays: [],
-        category: 'gaming'
+        category: 'video_games'
     },
     [channels.tvMovie]: {
         link: feeds.entertainment,

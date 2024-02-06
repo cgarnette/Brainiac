@@ -1,4 +1,4 @@
-import { extract } from '@extractus/article-extractor'
+import { ArticleData, extract } from '@extractus/article-extractor'
 import { discordConnector } from './discordConnector';
 
 const { postErrorNotification } = discordConnector;
@@ -18,15 +18,15 @@ export const getWeather = (args: GetWeatherArgs) => {
 
 };
 
-export const getArticleText = async (args: GetArticleText): Promise<string> => {
+export const getArticleContent = async (args: GetArticleText): Promise<ArticleData | null> => {
     const parsedArticle = await extract(args.url);
-    if (parsedArticle?.content) {
-        return parsedArticle.content;
+    if (parsedArticle !== null) {
+        return parsedArticle;
     } else {
         console.error('Something went wrong parsing article: ', args.url);
         console.error(parsedArticle)
         postErrorNotification('Something went wrong parsing article: ' + args.url);
     }
 
-    return '';
+    return null;
 };

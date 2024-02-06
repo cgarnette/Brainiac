@@ -7,7 +7,8 @@ import crypto from 'crypto';
 import ArticlesData from '../../data/articles.json';
 import * as fs from 'fs';
 import { getAiResponse } from '../aiIntegration';
-import { getArticleText } from '../BrainFunctions';
+import { getArticleContent } from '../BrainFunctions';
+import axios from 'axios';
 
 const { client, postErrorNotification } = discordConnector;
 
@@ -37,7 +38,7 @@ const job = new cron.CronJob('30 15 * * *', async () => {
             const today = new Date().getDay();
 
             if (channelMapping[channel].releaseDays.includes(today)) {
-                await sendArticlesToDiscordChannel(channel);
+                await executeDiscordArticleFlow(channel);
             }
         });
     } catch (e) {
@@ -52,52 +53,87 @@ export const startArticleJob = () => {
     job.start();
 };
 
-export const sendArticlesToDiscordChannel  = async (channelId: string) => {
+export const executeBrainiacArticleFlow = async (channelId: string) => {
+    const articles = await getArticlesFromFeed(channelId) || [];
+    const category = channelMapping[channelId].category;
+
+    articles.forEach(async (article) => await sendArticleToBrainStore(article, category));
+};
+
+export const sendArticleToBrainStore = async (article: ParsedArticle, category: string) => {
+
+    const articleData = await getArticleContent({ url: article.link })
+
+    console.log(articleData);
+
+    // axios.post('http://10.147.19.181:8082/documents/add/html', {
+    //     source: article.link,
+    //     category: category,
+    //     text: articleText,
+    //     metadata: {
+    //         subs: [],
+    //         author: "",
+    //         publish_date: "",
+    //         media_type: "article"
+    //     }
+    // })
+}
+
+
+/// FOR DISCORD //////
+export const executeDiscordArticleFlow = async (channelId: string) => {
+    const articles = await getArticlesFromFeed(channelId) || [];
+    const category = channelMapping[channelId].category
+
+    articles.forEach((article) => persistParsedArticle(article, category));
+    await sendArticlesToDiscord(articles, channelId);
+}
+
+export const persistParsedArticle = async (article: ParsedArticle, category: string) => {
+    const prompt = `Hi, please read the following article and summarize it for future ai such as yourself. I would like another ai to be able to read this summary and be able to gather all the key information that was present in this article. Please try to include major themes, people, places, actions, outcomes, buzzwords and key take aways. please try to do so in ${ARTICLE_SUMMARY_WORD_LIMIT} words or less.`;
+    const summary = await getArticleContent({ url: article.link })
+        .then(async (articleData) => {
+            return (await getAiResponse(`${prompt} Article: ${article.title}: ${articleData?.content}`)).content as string;
+        })
+        .catch((e) => {
+            // console.error('Unable to get a summary', e);
+            return `Article: ${article.title}: ${article.description}`;
+        });
+
+    addArticleToDb(category, article, summary);
+    saveToFile();
+};
+
+export const getArticlesFromFeed = async (channelId: string) => {
     const feedUrl = channelMapping[channelId] || channelMapping[channels.aotd];
     if (!feedUrl) return;
 
+    return await parseFeedForArticles(feedUrl.link)
+        .then(async (allArticles) => reduceAndDiversifyArticles(allArticles))
+        .catch((e) => postErrorNotification(e))
+};
+
+export const sendArticlesToDiscord = async (selectedArticles: ParsedArticle[], channelId: string) => {
     const channel = await client.channels.fetch(channelId) as TextChannel;
     const category = channelMapping[channelId].category;
+    const articleMessageQueue = await prepArticlesForDiscord(selectedArticles);
 
-    await parseFeedForArticles(feedUrl.link)
-        .then(async (allArticles) => {
-            fs.writeFileSync('output.json', JSON.stringify(allArticles));
-            const selectedArticles = reduceAndDiversifyArticles(allArticles);
-
-            selectedArticles.forEach(async (article) => {
-                const prompt = `Hi, please read the following article and summarize it for future ai such as yourself. I would like another ai to be able to read this summary and be able to gather all the key information that was present in this article. Please try to include major themes, people, places, actions, outcomes, buzzwords and key take aways. please try to do so in ${ARTICLE_SUMMARY_WORD_LIMIT} words or less.`;
-                const summary = await getArticleText({ url: article.link })
-                    .then(async (articleText) => {
-                        return (await getAiResponse(`${prompt} Article: ${article.title}: ${articleText}`)).content as string;
-                    })
-                    .catch((e) => {
-                        // console.error('Unable to get a summary', e);
-                        return `Article: ${article.title}: ${article.description}`;
-                    });
-
-                addArticleToDb(category, article, summary);
+    articleMessageQueue.forEach(async (message, index) => {
+        const sentMessage = await channel.send(message);
+        sentMessage
+            .createReactionCollector({ filter: () => true, max: 20, time: 60000 * 60 * 24 })
+            .on('collect', (reaction) => {
+                if (reaction.emoji.name === '👍' && index > 0) {
+                    incrementArticleScore(category, selectedArticles[index - 1]);
+                } else if (reaction.emoji.name === '👎' && index > 0) {
+                    decrementArticleScore(category, selectedArticles[index - 1]);
+                }
                 saveToFile();
             });
-            const articleMessageQueue = await prepArticlesForDiscord(selectedArticles);
-            articleMessageQueue.forEach(async (message, index) => {
-                const sentMessage = await channel.send(message);
-                sentMessage
-                    .createReactionCollector({ filter: () => true, max: 20, time: 60000 * 60 * 24 })
-                    .on('collect', (reaction) => {
-                        if (reaction.emoji.name === '👍' && index > 0) {
-                            incrementArticleScore(category, selectedArticles[index - 1]);
-                        } else if (reaction.emoji.name === '👎' && index > 0) {
-                            decrementArticleScore(category, selectedArticles[index - 1]);
-                        }
-                        saveToFile();
-                    });
-            });
-        })
-        .catch((e) => {
-            postErrorNotification(e);
-            return;
-        }); 
+    });
 };
+
+//////////////////////////////////////////////////////////////////////
 
 const addArticleToDb = (category: string, article: ParsedArticle, summary: string) => {
     const articleId = crypto.createHash('sha256').update(article.link).digest('hex');
